@@ -1,0 +1,29 @@
+{
+  "name": "teleport",
+  "version": "0.1.0",
+  "description": "A small Bun-powered CLI for jumping to frequently used directories by alias.",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "teleport": "dist/teleport"
+  },
+  "scripts": {
+    "dev": "bun run src/cli.ts",
+    "build": "bun build src/cli.ts --compile --outfile dist/teleport",
+    "test": "bun test"
+  },
+  "keywords": [
+    "bun",
+    "cli",
+    "shell",
+    "terminal",
+    "productivity"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
