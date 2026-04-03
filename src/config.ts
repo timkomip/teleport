@@ -25,7 +25,7 @@ export async function findConfigPath(): Promise<string> {
     }
   }
   throw new Error(
-    "No config found. Create teleport.yaml at ~/.config/teleport/teleport.yaml or set $TELEPORT_CONFIG"
+    "No config found. Create teleport.yaml at ~/.config/teleport/teleport.yaml or set $TELEPORT_CONFIG",
   );
 }
 
@@ -54,6 +54,6 @@ export async function loadConfig(): Promise<TeleportConfig> {
   }
 
   throw new Error(
-    "No config found. Create teleport.yaml at ~/.config/teleport/teleport.yaml or set $TELEPORT_CONFIG"
+    "No config found. Create teleport.yaml at ~/.config/teleport/teleport.yaml or set $TELEPORT_CONFIG",
   );
 }

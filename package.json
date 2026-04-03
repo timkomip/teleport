@@ -1,27 +1,33 @@
 {
   "name": "teleport",
   "version": "0.1.0",
-  "description": "A small Bun-powered CLI for jumping to frequently used directories by alias.",
-  "module": "index.ts",
-  "type": "module",
   "private": true,
-  "bin": {
-    "teleport": "dist/teleport"
-  },
-  "scripts": {
-    "dev": "bun run src/cli.ts",
-    "build": "bun build src/cli.ts --compile --outfile dist/teleport",
-    "test": "bun test"
-  },
+  "description": "A small Bun-powered CLI for jumping to frequently used directories by alias.",
   "keywords": [
     "bun",
     "cli",
+    "productivity",
     "shell",
-    "terminal",
-    "productivity"
+    "terminal"
   ],
+  "bin": {
+    "teleport": "dist/teleport"
+  },
+  "type": "module",
+  "module": "index.ts",
+  "scripts": {
+    "dev": "bun run src/cli.ts",
+    "build": "bun build src/cli.ts --compile --outfile dist/teleport",
+    "test": "bun test",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "check": "bun run fmt:check && bun run lint && bun test"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "oxfmt": "^0.43.0",
+    "oxlint": "^1.58.0"
   },
   "peerDependencies": {
     "typescript": "^5"

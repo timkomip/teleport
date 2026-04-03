@@ -14,10 +14,13 @@ afterEach(async () => {
 });
 
 function run(args: string[], env: Record<string, string> = {}) {
-  return Bun.$`bun ${cli} ${args}`.env({
-    ...process.env,
-    ...env,
-  }).quiet().nothrow();
+  return Bun.$`bun ${cli} ${args}`
+    .env({
+      ...process.env,
+      ...env,
+    })
+    .quiet()
+    .nothrow();
 }
 
 test("help output", async () => {
