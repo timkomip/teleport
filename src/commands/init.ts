@@ -14,10 +14,9 @@ const ZSH_COMPLETION = `_t() {
   local -a aliases
   while IFS= read -r line; do
     local name desc
-    name="\${line%%  *}"
-    name="\${name## }"
-    desc="\${line##*  }"
-    aliases+=("\${name}:\${desc}")
+    name=$(echo "\$line" | awk '{print \$1}')
+    desc=$(echo "\$line" | awk '{print \$2}')
+    [ -n "\$name" ] && aliases+=("\${name}:\${desc}")
   done < <(teleport list 2>/dev/null)
   _describe 'alias' aliases
 }
