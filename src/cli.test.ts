@@ -31,15 +31,10 @@ test("--help flag", async () => {
   expect(result.stdout.toString()).toContain("Usage: teleport");
 });
 
-test("no args lists aliases", async () => {
-  const configPath = join(tmpDir, "teleport.yaml");
-  await Bun.write(configPath, "code: ~/code\nhome: ~/\n");
-
-  const result = await run([], { TELEPORT_CONFIG: configPath });
-  const out = result.stdout.toString();
-  expect(out).toContain("code");
-  expect(out).toContain("~/code");
-  expect(result.exitCode).toBe(0);
+test("no args shows help on stderr and exits 1", async () => {
+  const result = await run([]);
+  expect(result.stderr.toString()).toContain("Usage: teleport");
+  expect(result.exitCode).toBe(1);
 });
 
 test("init zsh outputs shell function", async () => {

@@ -14,8 +14,8 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    await listCommand();
-    return;
+    console.error(HELP);
+    process.exit(1);
   }
 
   if (args[0] === "help" || args[0] === "--help" || args[0] === "-h") {

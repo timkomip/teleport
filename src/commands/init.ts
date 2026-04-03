@@ -1,15 +1,12 @@
 const SHELL_FUNCTION = `t() {
+  if [ $# -eq 0 ]; then
+    teleport list
+    return
+  fi
   local result
   result="$(teleport "$@")"
-  local code=$?
-  if [ $code -eq 0 ] && [ -n "$result" ]; then
-    local lines
-    lines=$(echo "$result" | wc -l)
-    if [ "$lines" -eq 1 ] && [ -d "$result" ]; then
-      cd "$result"
-    else
-      echo "$result"
-    fi
+  if [ $? -eq 0 ] && [ -n "$result" ]; then
+    cd "$result"
   fi
 }`;
 
