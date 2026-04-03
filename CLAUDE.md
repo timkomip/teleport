@@ -1,111 +1,56 @@
----
-description: Use Bun instead of Node.js, npm, pnpm, or vite.
-globs: "*.ts, *.tsx, *.html, *.css, *.js, *.jsx, package.json"
-alwaysApply: false
----
+# Teleport
 
-Default to using Bun instead of Node.js.
+A Bun-powered CLI for jumping to directories by alias. Config is YAML, shell integration via `eval "$(teleport init zsh)"`.
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
+## Stack
 
-## APIs
+- **Runtime:** Bun (not Node.js). Use `bun` for everything: running, testing, building, installing.
+- **Language:** TypeScript
+- **Formatting:** oxfmt (`bun run fmt` to fix, `bun run fmt:check` to verify)
+- **Linting:** oxlint (`bun run lint`)
+- **Testing:** `bun test`
+- **Build:** `bun run build` (compiles standalone binary to `dist/teleport`)
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+## Project structure
 
-## Testing
-
-Use `bun test` to run tests.
-
-```ts#index.test.ts
-import { test, expect } from "bun:test";
-
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+```
+src/cli.ts              CLI entry point, arg parsing, routes to commands
+src/commands/            One file per subcommand (init, list, config, teleport)
+src/config.ts            Config loading (YAML, multiple search paths)
+src/resolve.ts           Alias resolution and tilde expansion
+index.ts                 Re-exports src/cli.ts
+lefthook.yml             Pre-commit hooks config
+teleport.example.yaml    Example config file
 ```
 
-## Frontend
+## Commands
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
-
-Server:
-
-```ts#index.ts
-import index from "./index.html"
-
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
+```
+bun install              Install dependencies
+bun test                 Run tests
+bun run build            Compile standalone binary
+bun run fmt              Format code
+bun run fmt:check        Check formatting without writing
+bun run lint             Run linter
+bun run check            Run fmt:check + lint + test (all three)
+bun run dev              Run CLI in dev mode
 ```
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+## Before finishing any change
 
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
+Always verify your changes pass all checks before committing:
+
+```
+bun run check
 ```
 
-With the following `frontend.tsx`:
+This runs formatting, linting, and tests. Pre-commit hooks (via lefthook) enforce this automatically, but run it yourself first to catch issues early.
 
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
+If formatting fails, fix with `bun run fmt` and re-run.
 
-// import .css files directly and it works
-import './index.css';
+## Conventions
 
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+- Use Bun APIs over Node.js equivalents (`Bun.file` over `fs`, `Bun.YAML` for YAML parsing, `Bun.$` for shell commands)
+- Tests live next to source files (`*.test.ts`)
+- One command per file in `src/commands/`
+- Config resolution order: `$TELEPORT_CONFIG` → `$XDG_CONFIG_HOME/teleport/teleport.yaml` → `~/teleport.yaml`
