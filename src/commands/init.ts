@@ -12,12 +12,7 @@ const T_FUNCTION = `t() {
 
 const ZSH_COMPLETION = `_t() {
   local -a aliases
-  while IFS= read -r line; do
-    local name desc
-    name=$(echo "\$line" | awk '{print \$1}')
-    desc=$(echo "\$line" | awk '{print \$2}')
-    [ -n "\$name" ] && aliases+=("\${name}:\${desc}")
-  done < <(teleport list 2>/dev/null)
+  aliases=(\${(f)"$(teleport list --completion 2>/dev/null)"})
   _describe 'alias' aliases
 }
 compdef _t t`;
@@ -25,7 +20,7 @@ compdef _t t`;
 const BASH_COMPLETION = `_t() {
   local cur aliases
   cur="\${COMP_WORDS[COMP_CWORD]}"
-  aliases="$(teleport list 2>/dev/null | awk '{print \$1}')"
+  aliases="$(teleport list --completion 2>/dev/null | cut -d: -f1)"
   COMPREPLY=($(compgen -W "\${aliases}" -- "\${cur}"))
 }
 complete -F _t t`;

@@ -39,7 +39,7 @@ async function main() {
         break;
       }
       case "list":
-        await listCommand();
+        await listCommand({ completion: args.includes("--completion") });
         break;
       case "config":
         await configCommand();
