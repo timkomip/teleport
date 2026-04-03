@@ -1,9 +1,11 @@
 import { teleportCommand } from "./commands/teleport.ts";
 import { initCommand } from "./commands/init.ts";
 import { listCommand } from "./commands/list.ts";
+import { configCommand } from "./commands/config.ts";
 
 const HELP = `Usage: teleport <alias>       Resolve alias and print path
        teleport list           List all aliases
+       teleport config         Print path to active config file
        teleport init <shell>   Output shell function (zsh, bash)
        teleport help           Show this help
 
@@ -38,6 +40,9 @@ async function main() {
       }
       case "list":
         await listCommand();
+        break;
+      case "config":
+        await configCommand();
         break;
       default:
         await teleportCommand(command);

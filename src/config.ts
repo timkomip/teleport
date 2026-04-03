@@ -17,6 +17,18 @@ function configPaths(): string[] {
   return paths;
 }
 
+export async function findConfigPath(): Promise<string> {
+  for (const path of configPaths()) {
+    const file = Bun.file(path);
+    if (await file.exists()) {
+      return path;
+    }
+  }
+  throw new Error(
+    "No config found. Create teleport.yaml at ~/.config/teleport/teleport.yaml or set $TELEPORT_CONFIG"
+  );
+}
+
 export async function loadConfig(): Promise<TeleportConfig> {
   for (const path of configPaths()) {
     const file = Bun.file(path);

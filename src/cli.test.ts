@@ -81,6 +81,24 @@ test("unknown alias fails", async () => {
   expect(result.exitCode).toBe(1);
 });
 
+test("config prints config path", async () => {
+  const configPath = join(tmpDir, "teleport.yaml");
+  await Bun.write(configPath, "code: ~/code\n");
+
+  const result = await run(["config"], { TELEPORT_CONFIG: configPath });
+  expect(result.stdout.toString().trim()).toBe(configPath);
+  expect(result.exitCode).toBe(0);
+});
+
+test("config fails when no config exists", async () => {
+  const result = await run(["config"], {
+    TELEPORT_CONFIG: join(tmpDir, "nonexistent.yaml"),
+    XDG_CONFIG_HOME: tmpDir,
+  });
+  expect(result.stderr.toString()).toContain("No config found");
+  expect(result.exitCode).toBe(1);
+});
+
 test("list shows aliases", async () => {
   const configPath = join(tmpDir, "teleport.yaml");
   await Bun.write(configPath, "code: ~/code\nhome: ~/\n");
