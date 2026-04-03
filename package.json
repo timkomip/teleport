@@ -22,10 +22,12 @@
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
     "lint": "oxlint .",
-    "check": "bun run fmt:check && bun run lint && bun test"
+    "check": "bun run fmt:check && bun run lint && bun test",
+    "prepare": "lefthook install"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "lefthook": "^2.1.4",
     "oxfmt": "^0.43.0",
     "oxlint": "^1.58.0"
   },
