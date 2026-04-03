@@ -37,17 +37,24 @@ test("no args shows help on stderr and exits 1", async () => {
   expect(result.exitCode).toBe(1);
 });
 
-test("init zsh outputs shell function", async () => {
+test("init zsh outputs shell function and completion", async () => {
   const result = await run(["init", "zsh"]);
   const out = result.stdout.toString();
   expect(out).toContain("t()");
   expect(out).toContain('cd "$result"');
+  expect(out).toContain("_t()");
+  expect(out).toContain("compdef _t t");
+  expect(out).toContain("_describe");
   expect(result.exitCode).toBe(0);
 });
 
-test("init bash outputs shell function", async () => {
+test("init bash outputs shell function and completion", async () => {
   const result = await run(["init", "bash"]);
-  expect(result.stdout.toString()).toContain("t()");
+  const out = result.stdout.toString();
+  expect(out).toContain("t()");
+  expect(out).toContain("_t()");
+  expect(out).toContain("complete -F _t t");
+  expect(out).toContain("compgen");
   expect(result.exitCode).toBe(0);
 });
 
